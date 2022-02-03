@@ -2,7 +2,7 @@
 export PATH="$HOME/.cargo/bin:$HOME/bin:/usr/local/opt/util-linux/sbin:/usr/local/opt/util-linux/bin:/usr/local/bin:/bin:/bin:/usr/local/opt/libpq/bin":$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/assapir/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -75,13 +75,6 @@ plugins=(
  zsh-syntax-highlighting
  )
 
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-
-  autoload -Uz compinit
-  compinit
-fi
-
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -121,7 +114,6 @@ export EDITOR="nano"
 if [ /usr/local/bin/kubectl ]; then source <(kubectl completion zsh); fi
 
 export NVM_DIR="$HOME/.nvm"
-. "$(brew --prefix nvm)/nvm.sh"
 
 auto-switch-node-version() {
   NVMRC_PATH=$(nvm_find_nvmrc)
@@ -190,7 +182,6 @@ auto-switch-node-version() {
 autoload -U add-zsh-hook
 add-zsh-hook chpwd auto-switch-node-version
 auto-switch-node-version
-eval "$(direnv hook zsh)"
 
 load-tfswitch() {
   local tfswitchrc_path=".tfswitchrc"
@@ -199,9 +190,6 @@ load-tfswitch() {
     tfswitch
   fi
 }
-
-eval $(starship init zsh)
-eval $(register-python-argcomplete az)
 
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
