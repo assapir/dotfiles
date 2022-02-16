@@ -14,3 +14,7 @@ echo "==========================================================="
 echo "             import zshrc                                  "
 echo "-----------------------------------------------------------"
 cat .zshrc > $HOME/.zshrc
+
+nvm install node
+
+gem install solargraph
