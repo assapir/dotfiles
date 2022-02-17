@@ -16,4 +16,6 @@ cat .zshrc > $HOME/.zshrc
 
 nvm alias default node
 
+nvm install default
+
 gem install solargraph
