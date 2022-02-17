@@ -14,8 +14,7 @@ export BUNDLE_RUBYGEMS__PKG__GITHUB__COM=$GITHUB_TOKEN
 
 cat .zshrc > $HOME/.zshrc
 
+nvm install node
 nvm alias default node
-
-nvm install default
 
 gem install solargraph
