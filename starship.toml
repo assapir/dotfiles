@@ -2,9 +2,7 @@
 staged = '[+\($count\)](green)'
 untracked = '[🤷‍\($count\)](pink)'
 
-[hostname]
-ssh_only = false
-
-[username]
-show_always = true
-format = "[$user]($style) on "
+[kubernetes]
+disabled = false
+[kubernetes.context_aliases]
+'gke_.*_(?P<var_cluster>[\w-]+)' = 'gke-$var_cluster'
