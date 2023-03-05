@@ -159,7 +159,7 @@ source /usr/bin/virtualenvwrapper_lazy.sh
 source /usr/share/doc/pkgfile/command-not-found.zsh
 source <(stern --completion=zsh)
 HEROKU_AC_ZSH_SETUP_PATH=/home/assaf/.cache/heroku/autocomplete/zsh_setup && test -f $HEROKU_AC_ZSH_SETUP_PATH && source $HEROKU_AC_ZSH_SETUP_PATH;
-export NPM_TOKEN="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"
+export NPM_TOKEN=""
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 export EDITOR=nano
 export PATH="/usr/share/rvm/bin:$HOME/.cargo/bin:$PATH"
