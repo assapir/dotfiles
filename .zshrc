@@ -1,4 +1,4 @@
-# Start configuration added by Zim install {{{
+d# Start configuration added by Zim install {{{
 #
 # User configuration sourced by interactive shells
 #
@@ -128,9 +128,6 @@ alias ls='exa -alh --icons'
 alias kubectl='kubecolor'
 alias k='kubectl'
 alias tf='terraform'
-alias stern='stern -E istio-proxy'
-
-
 
 autoload -U add-zsh-hook
 load-nvmrc() {
