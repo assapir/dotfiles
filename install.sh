@@ -14,14 +14,14 @@ install_tools() {
     fi
     echo "Installing via Homebrew..."
     brew install starship eza bat kubectl kubecolor nvm gh \
-      ghostty terraform stern bitwarden-cli 2>/dev/null || true
+      ghostty terraform stern 2>/dev/null || true
     brew install --cask visual-studio-code 2>/dev/null || true
   else
     if command -v pacman &>/dev/null; then
       echo "Installing via pacman..."
       sudo pacman -S --needed --noconfirm \
         zsh starship eza bat kubectl kubecolor nvm github-cli \
-        ghostty terraform stern bitwarden-cli
+        ghostty terraform stern
       # Install yay if not present (needed for AUR packages)
       if ! command -v yay &>/dev/null; then
         echo "Installing yay..."
@@ -41,38 +41,10 @@ install_tools() {
 setup_git() {
   echo "=== Git & GitHub setup ==="
 
-  # Restore SSH keys from Bitwarden if missing
-  if [[ ! -f ~/.ssh/id_ed25519 ]]; then
-    mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    if command -v bw &>/dev/null; then
-      echo "Restoring SSH keys from Bitwarden..."
-      # Unlock vault if needed
-      if ! bw unlock --check &>/dev/null; then
-        export BW_SESSION=$(bw unlock --raw)
-      fi
-      # Find the SSH key item and download attachments
-      local item_id
-      item_id=$(bw list items --search "ssh" | jq -r '.[0].id')
-      if [[ -n "$item_id" && "$item_id" != "null" ]]; then
-        bw get attachment id_ed25519 --itemid "$item_id" --output ~/.ssh/id_ed25519
-        bw get attachment id_ed25519.pub --itemid "$item_id" --output ~/.ssh/id_ed25519.pub
-        chmod 600 ~/.ssh/id_ed25519
-        chmod 644 ~/.ssh/id_ed25519.pub
-        echo "SSH keys restored."
-      else
-        echo "No SSH key item found in Bitwarden. Create a Secure Note named 'ssh'"
-        echo "and attach id_ed25519 + id_ed25519.pub to it."
-      fi
-    else
-      echo "No SSH key found and Bitwarden CLI not installed."
-      echo "Install it (https://bitwarden.com/help/cli/) then re-run, or copy keys manually."
-    fi
-  fi
-
-  # Authenticate gh CLI if not already logged in
+  # Authenticate gh CLI if not already logged in (uses HTTPS for git operations)
   if command -v gh &>/dev/null && ! gh auth status &>/dev/null; then
     echo "Logging into GitHub CLI..."
-    gh auth login
+    gh auth login --protocol https
   fi
 }
 
