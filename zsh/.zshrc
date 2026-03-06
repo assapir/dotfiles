@@ -150,13 +150,15 @@ if [[ "$(uname)" == "Darwin" ]]; then
   [[ -d "$HOME/.rd/bin" ]] && export PATH="$HOME/.rd/bin:$PATH"
 else
   # Linux (init-nvm.sh sources both nvm.sh and bash_completion)
-  source /usr/share/nvm/init-nvm.sh
+  [[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
 fi
 
-# === kubectl/kubecolor (installed on both) ===
-source <(kubectl completion zsh)
-compdef kubecolor=kubectl
-alias kubectl='kubecolor'
+# === kubectl/kubecolor ===
+if command -v kubectl &>/dev/null; then
+  source <(kubectl completion zsh)
+  compdef kubecolor=kubectl
+  alias kubectl='kubecolor'
+fi
 
 # === nvm auto-switch ===
 autoload -U add-zsh-hook
@@ -172,7 +174,7 @@ load-nvmrc() {
     elif [ "$nvmrc_node_version" != "$node_version" ]; then
       nvm use
     fi
-  elif [ "$node_version" != "$(nvm version default)" ]; then
+  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$node_version" != "$(nvm version default)" ]; then
     echo "Reverting to nvm default version"
     nvm use default
   fi
