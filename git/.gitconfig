@@ -1,0 +1,9 @@
+[user]
+	email = assaf@sapir.io
+	name = Assaf Sapir
+[init]
+	defaultBranch = main
+[credential]
+	helper = store
+[push]
+	autoSetupRemote = true

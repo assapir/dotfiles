@@ -128,43 +128,61 @@ for key ('j') bindkey -M vicmd ${key} history-substring-search-down
 unset key
 # }}} End configuration added by Zim install
 
+# === Shared config ===
 eval "$(starship init zsh)"
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-autoload -U add-zsh-hook
+alias cat='bat -p --paging=never'
+alias ls='eza -alh --icons=auto'
+alias k='kubectl'
+alias tf='terraform'
+export EDITOR=nano
 
+# === OS-specific ===
+if [[ "$(uname)" == "Darwin" ]]; then
+  # macOS
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && . "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+  export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/opt/libpq/bin:$PATH"
+  alias flashdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+  # Rancher Desktop
+  [[ -d "$HOME/.rd/bin" ]] && export PATH="$HOME/.rd/bin:$PATH"
+else
+  # Linux (init-nvm.sh sources both nvm.sh and bash_completion)
+  [[ -f /usr/share/nvm/init-nvm.sh ]] && source /usr/share/nvm/init-nvm.sh
+fi
+
+# === kubectl/kubecolor ===
+if command -v kubectl &>/dev/null; then
+  source <(kubectl completion zsh)
+  compdef kubecolor=kubectl
+  alias kubectl='kubecolor'
+fi
+
+# === nvm auto-switch ===
+autoload -U add-zsh-hook
 load-nvmrc() {
-  local nvmrc_path
-  nvmrc_path="$(nvm_find_nvmrc)"
+  local node_version="$(nvm version)"
+  local nvmrc_path="$(nvm_find_nvmrc)"
 
   if [ -n "$nvmrc_path" ]; then
-    local nvmrc_node_version
-    nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+    local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
 
     if [ "$nvmrc_node_version" = "N/A" ]; then
       nvm install
-    elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
+    elif [ "$nvmrc_node_version" != "$node_version" ]; then
       nvm use
     fi
-  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
+  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$node_version" != "$(nvm version default)" ]; then
     echo "Reverting to nvm default version"
     nvm use default
   fi
 }
-
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 
-alias cat='bat -p --paging=never'
-alias ls='eza -alh --icons'
-source <(kubectl completion zsh)
-compdef kubecolor=kubectl
-alias kubectl='kubecolor'
-alias k='kubectl'
-alias flashdns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
-
-export EDITOR='nano'
-export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/opt/libpq/bin:$PATH"
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+# === PATH and secrets ===
+export PATH="$HOME/.cargo/bin:$PATH"
+fpath+=~/.zfunc
+[[ -f ~/.secrets ]] && source ~/.secrets
