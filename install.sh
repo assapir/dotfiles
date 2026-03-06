@@ -4,17 +4,6 @@ DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
 # ─── Tool installation ───────────────────────────────────────────────
 
-# Shared tools used across both macOS and Linux
-SHARED_TOOLS=(
-  starship    # shell prompt
-  eza         # modern ls
-  bat         # modern cat
-  kubectl     # kubernetes CLI
-  kubecolor   # colorized kubectl
-  nvm         # node version manager
-  gh          # github CLI
-)
-
 install_tools() {
   echo "=== Installing tools ==="
   if [[ "$(uname)" == "Darwin" ]]; then
@@ -24,7 +13,8 @@ install_tools() {
       eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
     echo "Installing via Homebrew..."
-    brew install "${SHARED_TOOLS[@]}" ghostty terraform stern 2>/dev/null || true
+    brew install starship eza bat kubectl kubecolor nvm gh \
+      ghostty terraform stern 2>/dev/null || true
   else
     if command -v pacman &>/dev/null; then
       echo "Installing via pacman..."
@@ -40,6 +30,48 @@ install_tools() {
         rm -rf /tmp/yay-install
       fi
     fi
+  fi
+}
+
+# ─── GitHub auth ─────────────────────────────────────────────────────
+
+setup_git() {
+  echo "=== Git & GitHub setup ==="
+
+  # Generate SSH key if not present
+  if [[ ! -f ~/.ssh/id_ed25519 ]]; then
+    echo "Generating SSH key..."
+    mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    ssh-keygen -t ed25519 -C "assaf@sapir.io" -f ~/.ssh/id_ed25519 -N ""
+    echo ""
+    echo "Add this SSH key to GitHub:"
+    echo "  https://github.com/settings/ssh/new"
+    echo ""
+    cat ~/.ssh/id_ed25519.pub
+    echo ""
+    read -rp "Press Enter after adding the key to GitHub..."
+  fi
+
+  # Authenticate gh CLI if not already logged in
+  if command -v gh &>/dev/null && ! gh auth status &>/dev/null; then
+    echo "Logging into GitHub CLI..."
+    gh auth login
+  fi
+}
+
+# ─── Clone repos ─────────────────────────────────────────────────────
+
+clone_repos() {
+  echo "=== Cloning repos ==="
+
+  # Claude Code agent skills (global)
+  if [[ ! -d "$HOME/.claude/skills" ]]; then
+    echo "Cloning agent-skills to ~/.claude/skills..."
+    mkdir -p "$HOME/.claude"
+    git clone https://github.com/assapir/agent-skills.git "$HOME/.claude/skills"
+  else
+    echo "agent-skills already present, pulling latest..."
+    git -C "$HOME/.claude/skills" pull
   fi
 }
 
@@ -59,9 +91,10 @@ link() {
 
 # ─── Main ────────────────────────────────────────────────────────────
 
-# Install tools if --install flag is passed
 if [[ "${1:-}" == "--install" ]]; then
   install_tools
+  setup_git
+  clone_repos
 fi
 
 echo "=== Linking dotfiles ==="
