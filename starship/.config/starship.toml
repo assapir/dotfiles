@@ -1,0 +1,22 @@
+[git_status]
+conflicted = '🏳'
+ahead = '🏎💨'
+behind = '😰'
+diverged = '😵'
+up_to_date = '✓'
+untracked = '[🤷‍\($count\)](pink)'
+stashed = '📦'
+modified = '📝'
+staged = '[++\($count\)](green)'
+renamed = '👅'
+deleted = '🗑'
+
+
+[character]
+error_symbol = '[✗](bold red) '
+
+[kubernetes]
+disabled = false
+contexts = [
+  { context_pattern = 'gke_.*_(?P<var_cluster>[\w-]+)', context_alias = "gke-$var_cluster" },
+]
