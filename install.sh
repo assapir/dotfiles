@@ -97,6 +97,7 @@ link "ghostty/.config/ghostty/config" ".config/ghostty/config"
 # Linux-only configs
 if [[ "$(uname)" != "Darwin" ]]; then
   link "yay/.config/yay/config.json"  ".config/yay/config.json"
+  link "niri/config.kdl"              ".config/niri/config.kdl"
 fi
 
 # Install Zim if not present
