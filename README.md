@@ -45,10 +45,12 @@ Safe to re-run — existing symlinks are overwritten, real files are backed up.
 | `starship/` | `.config/starship.toml` | Starship prompt theme |
 | `ghostty/` | `.config/ghostty/config` | Ghostty terminal config |
 | `paru/` | `.config/paru/paru.conf` | Paru AUR helper config (Linux only) |
+| `niri/` | `.config/niri/config.kdl` | Niri compositor config (Linux only) |
+| `greetd/` | `/etc/greetd/*`, `/etc/pam.d/greetd` | Login greeter config (Linux only) |
 
 ## Tools installed with `--install`
 
-starship, eza, bat, kubectl, kubecolor, nvm, gh, ghostty, terraform, stern, paru (Linux only)
+starship, eza, bat, kubectl, kubecolor, fnm, gh, ghostty, terraform, stern, paru (Linux only)
 
 ## Secrets
 
