@@ -101,7 +101,7 @@ binds {
     Mod+Period       { focus-monitor-right; }
     Mod+Slash        { focus-monitor-left; }
     Mod+Shift+Period { move-window-to-monitor-right; }
-    Mod+Shift+Slash  { move-window-to-monitor-left; }
+    Mod+Shift+Comma  { move-window-to-monitor-left; }
 
     Mod+Shift+S { screenshot; }
     Print       { screenshot-screen; }
@@ -110,7 +110,7 @@ binds {
     Mod+Shift+V { spawn "sh" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
 
     Mod+Escape { spawn "swaylock"; }
-    Mod+Shift+Question { show-hotkey-overlay; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
     Mod+M { quit; }
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1" "@DEFAULT_AUDIO_SINK@" "5%+"; }
