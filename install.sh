@@ -22,16 +22,16 @@ install_tools() {
       sudo pacman -S --needed --noconfirm \
         zsh starship eza bat kubectl kubecolor nvm github-cli \
         ghostty terraform stern greetd
-      # Install yay if not present (needed for AUR packages)
-      if ! command -v yay &>/dev/null; then
-        echo "Installing yay..."
+      # Install paru if not present (needed for AUR packages)
+      if ! command -v paru &>/dev/null; then
+        echo "Installing paru..."
         sudo pacman -S --needed --noconfirm git base-devel
-        git clone https://aur.archlinux.org/yay.git /tmp/yay-install
-        (cd /tmp/yay-install && makepkg -si --noconfirm)
-        rm -rf /tmp/yay-install
+        git clone https://aur.archlinux.org/paru.git /tmp/paru-install
+        (cd /tmp/paru-install && makepkg -si --noconfirm)
+        rm -rf /tmp/paru-install
       fi
       # AUR packages
-      yay -S --needed --noconfirm visual-studio-code-bin greetd-tuigreet-fork-bin
+      paru -S --needed --noconfirm visual-studio-code-bin greetd-tuigreet-fork-bin
     fi
   fi
 }
@@ -96,7 +96,7 @@ link "ghostty/.config/ghostty/config" ".config/ghostty/config"
 
 # Linux-only configs
 if [[ "$(uname)" != "Darwin" ]]; then
-  link "yay/.config/yay/config.json"  ".config/yay/config.json"
+  link "paru/.config/paru/paru.conf"  ".config/paru/paru.conf"
   link "niri/config.kdl"              ".config/niri/config.kdl"
 
   # greetd configs (system-level, need sudo for symlinks)

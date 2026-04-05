@@ -44,11 +44,11 @@ Safe to re-run — existing symlinks are overwritten, real files are backed up.
 | `git/` | `.gitconfig`, `.config/git/ignore` | Git identity and global ignore |
 | `starship/` | `.config/starship.toml` | Starship prompt theme |
 | `ghostty/` | `.config/ghostty/config` | Ghostty terminal config |
-| `yay/` | `.config/yay/config.json` | Yay AUR helper config (Linux only) |
+| `paru/` | `.config/paru/paru.conf` | Paru AUR helper config (Linux only) |
 
 ## Tools installed with `--install`
 
-starship, eza, bat, kubectl, kubecolor, nvm, gh, ghostty, terraform, stern, yay (Linux only)
+starship, eza, bat, kubectl, kubecolor, nvm, gh, ghostty, terraform, stern, paru (Linux only)
 
 ## Secrets
 
