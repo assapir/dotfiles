@@ -13,14 +13,14 @@ install_tools() {
       eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
     echo "Installing via Homebrew..."
-    brew install starship eza bat kubectl kubecolor nvm gh \
+    brew install starship eza bat kubectl kubecolor fnm gh \
       ghostty terraform stern 2>/dev/null || true
     brew install --cask visual-studio-code 2>/dev/null || true
   else
     if command -v pacman &>/dev/null; then
       echo "Installing via pacman..."
       sudo pacman -S --needed --noconfirm \
-        zsh starship eza bat kubectl kubecolor nvm github-cli \
+        zsh starship eza bat kubectl kubecolor fnm github-cli \
         ghostty terraform stern greetd git base-devel
       if ! command -v paru &>/dev/null; then
         echo "Installing paru..."

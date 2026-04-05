@@ -50,7 +50,7 @@ Safe to re-run — existing symlinks are overwritten, real files are backed up.
 
 ## Tools installed with `--install`
 
-starship, eza, bat, kubectl, kubecolor, nvm, gh, ghostty, terraform, stern, paru (Linux only)
+starship, eza, bat, kubectl, kubecolor, fnm, gh, ghostty, terraform, stern, paru (Linux only)
 
 ## Secrets
 
