@@ -21,16 +21,13 @@ install_tools() {
       echo "Installing via pacman..."
       sudo pacman -S --needed --noconfirm \
         zsh starship eza bat kubectl kubecolor nvm github-cli \
-        ghostty terraform stern greetd
-      # Install paru if not present (needed for AUR packages)
+        ghostty terraform stern greetd git base-devel
       if ! command -v paru &>/dev/null; then
         echo "Installing paru..."
-        sudo pacman -S --needed --noconfirm git base-devel
         git clone https://aur.archlinux.org/paru.git /tmp/paru-install
         (cd /tmp/paru-install && makepkg -si --noconfirm)
         rm -rf /tmp/paru-install
       fi
-      # AUR packages
       paru -S --needed --noconfirm visual-studio-code-bin greetd-tuigreet-fork-bin
     fi
   fi
@@ -68,7 +65,7 @@ clone_repos() {
 
 link() {
   local src="$DOTFILES/$1"
-  local dst="$HOME/$2"
+  local dst="$HOME/${1#*/}"
   mkdir -p "$(dirname "$dst")"
   if [[ -e "$dst" && ! -L "$dst" ]]; then
     echo "  Backing up $dst -> $dst.bak"
@@ -87,17 +84,17 @@ if [[ "${1:-}" == "--install" ]]; then
 fi
 
 echo "=== Linking dotfiles ==="
-link "zsh/.zshrc"                     ".zshrc"
-link "zsh/.zimrc"                     ".zimrc"
-link "git/.gitconfig"                 ".gitconfig"
-link "git/.config/git/ignore"         ".config/git/ignore"
-link "starship/.config/starship.toml" ".config/starship.toml"
-link "ghostty/.config/ghostty/config" ".config/ghostty/config"
+link "zsh/.zshrc"
+link "zsh/.zimrc"
+link "git/.gitconfig"
+link "git/.config/git/ignore"
+link "starship/.config/starship.toml"
+link "ghostty/.config/ghostty/config"
 
 # Linux-only configs
 if [[ "$(uname)" != "Darwin" ]]; then
-  link "paru/.config/paru/paru.conf"  ".config/paru/paru.conf"
-  link "niri/config.kdl"              ".config/niri/config.kdl"
+  link "paru/.config/paru/paru.conf"
+  link "niri/.config/niri/config.kdl"
 
   # greetd configs (system-level, need sudo for symlinks)
   if command -v greetd &>/dev/null; then
@@ -108,14 +105,12 @@ if [[ "$(uname)" != "Darwin" ]]; then
   fi
 fi
 
-# Install Zim if not present
 if [[ ! -d ~/.zim ]]; then
   echo ""
   echo "=== Installing Zim ==="
   curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.sh | zsh
 fi
 
-# Reminder for secrets
 if [[ ! -f ~/.secrets ]]; then
   echo ""
   echo "NOTE: Copy secrets template and fill in values:"
