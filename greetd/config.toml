@@ -1,0 +1,6 @@
+[terminal]
+vt = 1
+
+[default_session]
+command = "tuigreet --config /etc/greetd/tuigreet.toml"
+user = "greeter"

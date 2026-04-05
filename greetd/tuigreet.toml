@@ -1,0 +1,22 @@
+[general]
+time = true
+remember = true
+remember_session = true
+sessions = "/usr/share/wayland-sessions"
+greeting = "Welcome back."
+asterisks = true
+asterisks_char = "•"
+window_padding = 2
+container_padding = 2
+
+[theme]
+border = "cyan"
+text = "white"
+time = "dark_gray"
+container = "black"
+title = "cyan"
+greet = "dark_gray"
+prompt = "cyan"
+input = "white"
+action = "cyan"
+button = "dark_gray"
