@@ -70,3 +70,11 @@ fi
 export PATH="$HOME/.cargo/bin:$PATH"
 fpath+=~/.zfunc
 [[ -f ~/.secrets ]] && source ~/.secrets
+
+# pnpm
+export PNPM_HOME="/home/assaf/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

@@ -96,12 +96,12 @@ if [[ "$(uname)" != "Darwin" ]]; then
   link "paru/.config/paru/paru.conf"
   link "niri/.config/niri/config.kdl"
 
-  # greetd configs (system-level, need sudo for symlinks)
+  # greetd configs (system-level, copied because greetd runs as root before user session)
   if command -v greetd &>/dev/null; then
     echo "  Installing greetd configs (requires sudo)..."
-    sudo ln -sf "$DOTFILES/greetd/config.toml"   /etc/greetd/config.toml
-    sudo ln -sf "$DOTFILES/greetd/tuigreet.toml" /etc/greetd/tuigreet.toml
-    sudo ln -sf "$DOTFILES/greetd/greetd-pam"    /etc/pam.d/greetd
+    sudo cp "$DOTFILES/greetd/config.toml"   /etc/greetd/config.toml
+    sudo cp "$DOTFILES/greetd/tuigreet.toml" /etc/greetd/tuigreet.toml
+    sudo cp "$DOTFILES/greetd/greetd-pam"    /etc/pam.d/greetd
   fi
 fi
 
