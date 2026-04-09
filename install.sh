@@ -2,6 +2,48 @@
 set -euo pipefail
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
+# ─── Zim installation ───────────────────────────────────────────────
+
+install_zim() {
+  echo "=== Installing Zim ==="
+
+  if ! command -v zsh &>/dev/null; then
+    echo "zsh is required to install Zim"
+    return 1
+  fi
+
+  local zim_home="$HOME/.zim"
+  local zimrc="$DOTFILES/zsh/.zimrc"
+  local zimfw_url="https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh"
+
+  if [[ ! -f "$zimrc" ]]; then
+    echo "Missing $zimrc"
+    return 1
+  fi
+
+  if [[ ! -s "$zim_home/zimfw.zsh" ]]; then
+    echo "  Downloading zimfw..."
+    if command -v curl &>/dev/null; then
+      curl -fsSL --create-dirs -o "$zim_home/zimfw.zsh" "$zimfw_url"
+    elif command -v wget &>/dev/null; then
+      mkdir -p "$zim_home"
+      wget -nv -O "$zim_home/zimfw.zsh" "$zimfw_url"
+    else
+      echo "curl or wget is required to install Zim"
+      return 1
+    fi
+  fi
+
+  if [[ ! -s "$zim_home/zimfw.zsh" ]]; then
+    echo "Failed to download $zim_home/zimfw.zsh"
+    return 1
+  fi
+
+  ZIM_HOME="$zim_home" ZIM_CONFIG_FILE="$zimrc" zsh -c '
+    source "$ZIM_HOME/zimfw.zsh" init -q
+  '
+}
+
 # ─── Tool installation ───────────────────────────────────────────────
 
 install_tools() {
@@ -14,7 +56,15 @@ install_tools() {
     fi
     echo "Installing via Homebrew..."
     brew install starship eza bat kubectl kubecolor fnm gh \
-      ghostty terraform stern 2>/dev/null || true
+      ghostty stern 2>/dev/null || true
+    brew tap hashicorp/tap 2>/dev/null || true
+    if brew list --versions terraform &>/dev/null && ! brew list --versions hashicorp/tap/terraform &>/dev/null; then
+      echo "Replacing deprecated Homebrew terraform formula..."
+      brew uninstall terraform 2>/dev/null || true
+    fi
+    brew install hashicorp/tap/terraform 2>/dev/null || \
+      brew upgrade hashicorp/tap/terraform 2>/dev/null || \
+      brew reinstall hashicorp/tap/terraform 2>/dev/null || true
     brew install --cask visual-studio-code 2>/dev/null || true
   else
     if command -v pacman &>/dev/null; then
@@ -31,6 +81,9 @@ install_tools() {
       paru -S --needed --noconfirm visual-studio-code-bin greetd-tuigreet-fork-bin
     fi
   fi
+
+  echo ""
+  install_zim
 }
 
 # ─── GitHub auth ─────────────────────────────────────────────────────
@@ -41,7 +94,7 @@ setup_git() {
   # Authenticate gh CLI if not already logged in (uses HTTPS for git operations)
   if command -v gh &>/dev/null && ! gh auth status &>/dev/null; then
     echo "Logging into GitHub CLI..."
-    gh auth login --protocol https
+    gh auth login
   fi
 }
 
@@ -75,6 +128,30 @@ link() {
   echo "  $dst -> $src"
 }
 
+link_dotfiles() {
+  echo "=== Linking dotfiles ==="
+  link "zsh/.zshrc"
+  link "zsh/.zimrc"
+  link "git/.gitconfig"
+  link "git/.config/git/ignore"
+  link "starship/.config/starship.toml"
+  link "ghostty/.config/ghostty/config"
+
+  # Linux-only configs
+  if [[ "$(uname)" != "Darwin" ]]; then
+    link "paru/.config/paru/paru.conf"
+    link "niri/.config/niri/config.kdl"
+
+    # greetd configs (system-level, copied because greetd runs as root before user session)
+    if command -v greetd &>/dev/null; then
+      echo "  Installing greetd configs (requires sudo)..."
+      sudo cp "$DOTFILES/greetd/config.toml"   /etc/greetd/config.toml
+      sudo cp "$DOTFILES/greetd/tuigreet.toml" /etc/greetd/tuigreet.toml
+      sudo cp "$DOTFILES/greetd/greetd-pam"    /etc/pam.d/greetd
+    fi
+  fi
+}
+
 # ─── Main ────────────────────────────────────────────────────────────
 
 if [[ "${1:-}" == "--install" ]]; then
@@ -83,33 +160,7 @@ if [[ "${1:-}" == "--install" ]]; then
   clone_repos
 fi
 
-echo "=== Linking dotfiles ==="
-link "zsh/.zshrc"
-link "zsh/.zimrc"
-link "git/.gitconfig"
-link "git/.config/git/ignore"
-link "starship/.config/starship.toml"
-link "ghostty/.config/ghostty/config"
-
-# Linux-only configs
-if [[ "$(uname)" != "Darwin" ]]; then
-  link "paru/.config/paru/paru.conf"
-  link "niri/.config/niri/config.kdl"
-
-  # greetd configs (system-level, copied because greetd runs as root before user session)
-  if command -v greetd &>/dev/null; then
-    echo "  Installing greetd configs (requires sudo)..."
-    sudo cp "$DOTFILES/greetd/config.toml"   /etc/greetd/config.toml
-    sudo cp "$DOTFILES/greetd/tuigreet.toml" /etc/greetd/tuigreet.toml
-    sudo cp "$DOTFILES/greetd/greetd-pam"    /etc/pam.d/greetd
-  fi
-fi
-
-if [[ ! -d ~/.zim ]]; then
-  echo ""
-  echo "=== Installing Zim ==="
-  curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.sh | zsh
-fi
+link_dotfiles
 
 if [[ ! -f ~/.secrets ]]; then
   echo ""

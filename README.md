@@ -7,7 +7,7 @@ My dotfiles, managed with symlinks. Works on Arch Linux and macOS.
 ```bash
 git clone https://github.com/assapir/dotfiles.git ~/code/dotfiles
 cd ~/code/dotfiles
-./install.sh --install    # install tools + link configs + install Zim
+./install.sh --install    # install tools + bootstrap Zim + link configs
 cp zsh/.secrets.example ~/.secrets
 nano ~/.secrets           # fill in your API tokens
 ```
@@ -29,28 +29,28 @@ git pull
 
 ## What does `install.sh` do?
 
-| Command | What it does |
-|---------|-------------|
-| `./install.sh` | Link configs only (backs up existing files to `.bak`) |
-| `./install.sh --install` | Install tools via pacman/brew, then link configs + install Zim |
+| Command                  | What it does                                                           |
+| ------------------------ | ---------------------------------------------------------------------- |
+| `./install.sh`           | Link configs only (backs up existing files to `.bak`)                  |
+| `./install.sh --install` | Install tools via pacman/brew, bootstrap/update Zim, then link configs |
 
 Safe to re-run — existing symlinks are overwritten, real files are backed up.
 
 ## What's included
 
-| Package | Files | Description |
-|---------|-------|-------------|
-| `zsh/` | `.zshrc`, `.zimrc` | Zsh config with Zim plugin manager |
-| `git/` | `.gitconfig`, `.config/git/ignore` | Git identity and global ignore |
-| `starship/` | `.config/starship.toml` | Starship prompt theme |
-| `ghostty/` | `.config/ghostty/config` | Ghostty terminal config |
-| `paru/` | `.config/paru/paru.conf` | Paru AUR helper config (Linux only) |
-| `niri/` | `.config/niri/config.kdl` | Niri compositor config (Linux only) |
-| `greetd/` | `/etc/greetd/*`, `/etc/pam.d/greetd` | Login greeter config (Linux only) |
+| Package     | Files                                | Description                         |
+| ----------- | ------------------------------------ | ----------------------------------- |
+| `zsh/`      | `.zshrc`, `.zimrc`                   | Zsh config with Zim plugin manager  |
+| `git/`      | `.gitconfig`, `.config/git/ignore`   | Git identity and global ignore      |
+| `starship/` | `.config/starship.toml`              | Starship prompt theme               |
+| `ghostty/`  | `.config/ghostty/config`             | Ghostty terminal config             |
+| `paru/`     | `.config/paru/paru.conf`             | Paru AUR helper config (Linux only) |
+| `niri/`     | `.config/niri/config.kdl`            | Niri compositor config (Linux only) |
+| `greetd/`   | `/etc/greetd/*`, `/etc/pam.d/greetd` | Login greeter config (Linux only)   |
 
 ## Tools installed with `--install`
 
-starship, eza, bat, kubectl, kubecolor, fnm, gh, ghostty, terraform, stern, paru (Linux only)
+starship, eza, bat, kubectl, kubecolor, fnm, gh, ghostty, terraform (via `hashicorp/tap` on macOS), stern, paru (Linux only)
 
 ## Secrets
 
