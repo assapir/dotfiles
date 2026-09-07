@@ -7,9 +7,10 @@ zmodule zsh-users/zsh-completions --fpath src
 # completion must be sourced after all modules that add completion definitions
 zmodule completion
 
+# The Git plugin calls compdef, so completion must already be initialized.
+zmodule ohmyzsh/ohmyzsh --root plugins/git
+
 # These must be initialized last, in this order
 zmodule zsh-users/zsh-syntax-highlighting
 zmodule zsh-users/zsh-history-substring-search
 zmodule zsh-users/zsh-autosuggestions
-
-zmodule ohmyzsh/ohmyzsh --root plugins/git
