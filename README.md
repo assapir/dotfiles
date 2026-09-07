@@ -29,6 +29,21 @@ git pull
 
 ## What does `install.sh` do?
 
+Shell startup never downloads or regenerates Zim. Run `./install.sh --install`
+for initial setup. After changing `.zimrc`, run
+`source "${ZIM_HOME:-${ZDOTDIR:-$HOME}/.zim}/zimfw.zsh" init -q`
+in zsh, then open a new terminal to load the regenerated configuration.
+
+The shell remains usable without Zim or optional tools. pnpm uses
+`~/Library/pnpm` on macOS and `${XDG_DATA_HOME:-$HOME/.local/share}/pnpm`
+on Linux. kubectl completions are cached under
+`${XDG_CACHE_HOME:-$HOME/.cache}/zsh` and refreshed atomically.
+
+Homebrew initialization stays in `.zshrc` so non-login terminals (including
+VS Code terminals) also get its executable and completion paths. Keep
+Snowflake PATH setup in `.zshrc` too; remove old installer-added entries from
+`~/.zprofile` if present.
+
 | Command                  | What it does                                                           |
 | ------------------------ | ---------------------------------------------------------------------- |
 | `./install.sh`           | Link configs only (backs up existing files to `.bak`)                  |
